@@ -1,0 +1,66 @@
+/*
+  Toshiba IK-WB16A controler
+  By Mark Meadows
+  05-21-2012
+ 
+ */
+
+#include <SPI.h>
+#include <Ethernet.h>
+
+// Enter a MAC address for your controller below.
+
+byte mac[] = {  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress ip(192,168,2,33); //I.P. of Controler
+IPAddress server(192,168,2,32); // I.P. of Camera
+
+// Initialize the Ethernet client library
+// with the IP address and port of the server 
+
+EthernetClient client;
+
+void setup() {
+  // start the serial library:
+  Serial.begin(9600);
+  
+  // setup Input pins:
+  pinMode(5, INPUT);
+  pinMode(6, INPUT);
+  pinMode(7, INPUT);
+  pinMode(8, INPUT);
+  pinMode(9, INPUT);
+  pinMode(3, INPUT);
+  pinMode(2, INPUT);
+
+  // start the Ethernet connection:
+  if (Ethernet.begin(mac) == 0) {
+    Serial.println("Failed to configure Ethernet using DHCP");
+    // no point in carrying on, so do nothing forevermore:
+    for(;;)
+      ;
+  }
+  // give the Ethernet shield a second to initialize:
+  delay(1000);
+  Serial.println("connecting...");
+
+  // if you get a connection, report back via serial:
+  if (client.connect(server, 80)) {
+    Serial.println("connected");
+ 
+  }
+}
+
+void loop(){
+
+ 
+    
+    int inputPin5 = digitalRead(5);if (inputPin5 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/recall.cgi?stream=0&recall=1");client.stop();}
+    int inputPin6 = digitalRead(6);if (inputPin6 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/recall.cgi?stream=0&recall=2");client.stop();}
+    int inputPin7 = digitalRead(7);if (inputPin7 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/recall.cgi?stream=0&recall=3");client.stop();}
+    int inputPin8 = digitalRead(8);if (inputPin8 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/camctrl.cgi?channel=0&stream=0&move=left");client.stop();}
+    int inputPin9 = digitalRead(9);if (inputPin9 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/camctrl.cgi?channel=0&stream=0&move=right");client.stop();}
+    int inputPin3 = digitalRead(3);if (inputPin3 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/camctrl.cgi?channel=0&stream=0&move=up");client.stop();}
+    int inputPin2 = digitalRead(2);if (inputPin2 == HIGH) {client.connect(server, 80);client.println("GET /cgi-bin/camctrl/camctrl.cgi?channel=0&stream=0&move=down");client.stop();}
+}  
+    
+
